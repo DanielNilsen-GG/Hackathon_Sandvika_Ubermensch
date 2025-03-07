@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Velkommen til Ubermensch</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/script/main.css'>
+    <script src='/script/main.js' defer></script>
+</head>
+<body>
+    <h1>Velkommen til Ubermensch</h1>
+    <h3>Vennligst skriv ned planen for neste uke</h3>
+    <form id="schedulerForm">
+        <!-- Bio Input -->
+        <div>
+            <label for="bioInput">Legg til info om deg selv:</label>
+            <input type="text" id="bioInput" placeholder="E.g., Student at UiO">
+            <button type="button" id="addBio">Legg til</button>
+        </div>
+        <div id="bioDisplay">
+            <p><strong>Bio:</strong></p>
+            <ul id="bioList"></ul>
+        </div>
+
+        <!-- Weekly Plan Input -->
+        <div>
+            <label for="planInput">Plan for neste uke:</label>
+            <textarea id="planInput" placeholder="E.g., Code 10 hrs, Read Nietzsche 5 hrs"></textarea>
+        </div>
+
+        <!-- Commitment Level -->
+        <div>
+            <label for="commitmentLevel">Commitment nivå:</label>
+            <select id="commitmentLevel">
+                <option value="ingen">Ingen</option>
+                <option value="lav">Lav</option>
+                <option value="middels">Middels</option>
+                <option value="høy">Høy</option>
+            </select>
+        </div>
+
+        <!-- Submit and Example Button -->
+        <button type="submit">Generer plan</button>
+        <button type="button" id="showExample">Se eksempel</button>
+    </form>
+    <div id="scheduleDisplay"></div>
+</body>
+</html>
