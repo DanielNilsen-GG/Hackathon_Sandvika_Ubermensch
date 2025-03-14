@@ -44,6 +44,27 @@
         <button type="submit">Generer plan</button>
         <button type="button" id="showExample">Se eksempel</button>
     </form>
-    <div id="scheduleDisplay"></div>
+
+    <!-- Schedule Table -->
+    <div id="scheduleDisplay">
+        <h3>Din plan:</h3>
+        <table id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleBody">
+                <!-- Time slots will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     text-align: center;
@@ -69,12 +69,34 @@ button#showExample:hover {
 #scheduleDisplay {
     margin-top: 30px;
     text-align: left;
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
 }
 
-#scheduleDisplay pre {
-    white-space: pre-wrap;
+#scheduleTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#scheduleTable th, #scheduleTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#scheduleTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#scheduleTable td {
+    background-color: #fff;
+}
+
+#scheduleTable td:first-child {
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+#scheduleTable td:not(:first-child) {
+    min-height: 40px;
 }

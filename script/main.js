@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const commitmentLevel = document.getElementById('commitmentLevel');
     const showExample = document.getElementById('showExample');
     const schedulerForm = document.getElementById('schedulerForm');
+    const scheduleBody = document.getElementById('scheduleBody');
 
     // Load stored bio array
     let bioArray = [];
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     };
 
-    // Initial render
+    // Initial render of bio list
     if (bioArray.length > 0) {
         renderBioList();
     }
@@ -67,6 +68,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Generate time slots (8:00 AM to 8:00 PM)
+    const timeSlots = [];
+    for (let hour = 8; hour <= 20; hour++) {
+        timeSlots.push(`${hour}:00`);
+    }
+
+    // Initialize the table with empty time slots
+    const initializeTable = () => {
+        scheduleBody.innerHTML = timeSlots.map(time => `
+            <tr>
+                <td>${time}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        `).join('');
+    };
+    initializeTable();
+
+    // Parse API response and update table
+    const updateScheduleTable = (scheduleText) => {
+        // Reset table
+        initializeTable();
+
+        // Parse the schedule text (example format: "Monday:\n- 9:00 AM - 12:00 PM: Code")
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let currentDayIndex = -1;
+
+        const lines = scheduleText.split('\n');
+        lines.forEach(line => {
+            line = line.trim();
+            if (!line) return;
+
+            // Check for day headers
+            const dayMatch = days.findIndex(day => line.startsWith(day));
+            if (dayMatch !== -1) {
+                currentDayIndex = dayMatch;
+                return;
+            }
+
+            // Parse time slots and tasks (e.g., "- 9:00 AM - 12:00 PM: Code")
+            const taskMatch = line.match(/- (\d{1,2}:\d{2} [AP]M) - (\d{1,2}:\d{2} [AP]M): (.+)/);
+            if (taskMatch && currentDayIndex !== -1) {
+                const startTime = taskMatch[1];
+                const endTime = taskMatch[2];
+                const task = taskMatch[3];
+
+                // Convert times to 24-hour format for comparison
+                const parseTime = (timeStr) => {
+                    const [time, period] = timeStr.split(' ');
+                    let [hour, minute] = time.split(':').map(Number);
+                    if (period === 'PM' && hour !== 12) hour += 12;
+                    if (period === 'AM' && hour === 12) hour = 0;
+                    return hour + minute / 60;
+                };
+
+                const startHour = parseTime(startTime);
+                const endHour = parseTime(endTime);
+
+                // Find the row(s) to fill
+                timeSlots.forEach((slot, rowIndex) => {
+                    const slotHour = parseTime(slot);
+                    if (slotHour >= startHour && slotHour < endHour) {
+                        const row = scheduleBody.rows[rowIndex];
+                        if (row) {
+                            const cell = row.cells[currentDayIndex + 1]; // +1 to skip the time column
+                            cell.textContent = task;
+                        }
+                    }
+                });
+            }
+        });
+    };
+
     // Form submission to generate schedule
     schedulerForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -93,11 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Display the schedule
-            const scheduleDiv = document.createElement('div');
-            scheduleDiv.id = 'scheduleDisplay';
-            scheduleDiv.innerHTML = `<h3>Din plan:</h3><pre>${data.schedule}</pre>`;
-            document.body.appendChild(scheduleDiv);
+            // Update the table with the new schedule
+            updateScheduleTable(data.schedule);
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to generate schedule. Check the console for details.');
@@ -111,7 +187,22 @@ document.addEventListener('DOMContentLoaded', () => {
             renderBioList();
             planInput.value = 'Code 10 hrs, Read Nietzsche 5 hrs';
             commitmentLevel.value = 'middels';
-            alert('Example loaded! Click "Generer plan" to see the schedule.');
+
+            // Mock API response for example
+            const mockSchedule = `
+Monday:
+- 9:00 AM - 12:00 PM: Code
+- 1:00 PM - 2:00 PM: Read Nietzsche
+
+Tuesday:
+- 10:00 AM - 1:00 PM: Code
+
+Level Progress: Level 2 (15/30 points)
+- +5 for coding, +2 daily bonus.
+
+Commentary: The Übermensch does not drift—your coding shapes your destiny.
+            `;
+            updateScheduleTable(mockSchedule);
         });
     }
 });
